@@ -4,6 +4,7 @@ import { PageProvider } from './context/PageContext';
 import { Auth } from './pages/Auth';
 import { Builder } from './pages/Builder';
 import { Admin } from './pages/Admin';
+import { PublicPage } from './pages/PublicPage';
 import type { ReactNode } from 'react';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -45,7 +46,7 @@ function AppRoutes() {
       />
       <Route
         path="/:slug"
-        element={<div>Public page — Phase 5</div>}
+        element={<PublicPage />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
