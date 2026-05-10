@@ -12,6 +12,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable';
+import { useNavigate } from 'react-router-dom';
 import { SectionCard } from '../components/SectionCard/SectionCard';
 import { ChatSidebar } from '../components/ChatSidebar/ChatSidebar';
 import { usePage } from '../hooks/usePage';
@@ -37,8 +38,9 @@ const MODULE_ICONS: Record<ModuleType, string> = {
 };
 
 export function Builder() {
-  const { sections, loading, error, reorder, addSection, allowedModules } = usePage();
+  const { sections, loading, error, reorder, addSection, allowedModules, settings } = usePage();
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [addOpen, setAddOpen] = useState(false);
   const [adding, setAdding] = useState<ModuleType | null>(null);
 
@@ -72,7 +74,12 @@ export function Builder() {
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <span className={styles.logo}>hio</span>
-          <button className={styles.signOut} onClick={signOut}>Sign out</button>
+          <div className={styles.headerActions}>
+            {settings?.is_admin && (
+              <button className={styles.adminLink} onClick={() => navigate('/admin')}>Admin</button>
+            )}
+            <button className={styles.signOut} onClick={signOut}>Sign out</button>
+          </div>
         </div>
         <ChatSidebar />
       </aside>

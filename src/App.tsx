@@ -3,6 +3,7 @@ import { AuthProvider, useAuthContext } from './context/AuthContext';
 import { PageProvider } from './context/PageContext';
 import { Auth } from './pages/Auth';
 import { Builder } from './pages/Builder';
+import { Admin } from './pages/Admin';
 import type { ReactNode } from 'react';
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -14,7 +15,6 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 
 function AppRoutes() {
   const { session, loading } = useAuthContext();
-
   if (loading) return null;
 
   return (
@@ -29,6 +29,16 @@ function AppRoutes() {
           <ProtectedRoute>
             <PageProvider>
               <Builder />
+            </PageProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <PageProvider>
+              <Admin />
             </PageProvider>
           </ProtectedRoute>
         }
