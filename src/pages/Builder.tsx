@@ -13,6 +13,7 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable';
 import { SectionCard } from '../components/SectionCard/SectionCard';
+import { ChatSidebar } from '../components/ChatSidebar/ChatSidebar';
 import { usePage } from '../hooks/usePage';
 import { useAuth } from '../hooks/useAuth';
 import type { ModuleType } from '../types/module';
@@ -73,9 +74,7 @@ export function Builder() {
           <span className={styles.logo}>hio</span>
           <button className={styles.signOut} onClick={signOut}>Sign out</button>
         </div>
-        <div className={styles.chatPlaceholder}>
-          <p>AI chat — Phase 3</p>
-        </div>
+        <ChatSidebar />
       </aside>
 
       {/* Canvas */}
