@@ -1,15 +1,19 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { Page, Section } from '../types/page';
 import type { ModuleType, StyleVariant } from '../types/module';
+import type { UserSettings } from '../types/user';
+import { getAllowedModules } from '../types/user';
 import {
   getUserPage,
   getSections,
+  getUserSettings,
   updateSection,
   updateStyleVariant,
   reorderSections,
   deleteSection,
   insertSection,
 } from '../services/supabase';
+import { useAuthContext } from './AuthContext';
 
 const DEFAULT_CONTENT: Record<ModuleType, Section['content']> = {
   hero:        { headline: 'Your headline here', subheadline: 'A short intro sentence.' } as any,
@@ -22,11 +26,12 @@ const DEFAULT_CONTENT: Record<ModuleType, Section['content']> = {
   testimonial: { title: 'Testimonials', items: [], layout: 'grid' } as any,
   custom:      { html: '<p>Custom HTML content</p>', height: 200 } as any,
 };
-import { useAuthContext } from './AuthContext';
 
 interface PageContextValue {
   page: Page | null;
   sections: Section[];
+  settings: UserSettings | null;
+  allowedModules: ModuleType[];
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
@@ -40,34 +45,32 @@ interface PageContextValue {
 
 const PageContext = createContext<PageContextValue | null>(null);
 
-interface PageProviderProps {
-  children: ReactNode;
-}
-
-export function PageProvider({ children }: PageProviderProps) {
+export function PageProvider({ children }: { children: ReactNode }) {
   const { user } = useAuthContext();
-  const [page, setPage] = useState<Page | null>(null);
+  const [page, setPage]         = useState<Page | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!user) { setLoading(false); return; }
     setLoading(true);
     setError(null);
 
-    const p = await getUserPage(user.id);
+    const [p, s] = await Promise.all([getUserPage(user.id), getUserSettings(user.id)]);
     if (!p) { setError('Could not load page.'); setLoading(false); return; }
 
-    const s = await getSections(p.id);
+    const secs = await getSections(p.id);
     setPage(p);
-    setSections(s);
+    setSections(secs);
+    setSettings(s);
     setLoading(false);
   }, [user]);
 
   useEffect(() => { load(); }, [load]);
 
-  /* Optimistic updaters ──────────────────────────────────── */
+  const allowedModules = settings ? getAllowedModules(settings) : [];
 
   async function updateContent(id: string, content: Section['content']) {
     setSections(prev => prev.map(s => s.id === id ? { ...s, content } : s));
@@ -111,17 +114,10 @@ export function PageProvider({ children }: PageProviderProps) {
 
   return (
     <PageContext.Provider value={{
-      page,
-      sections,
-      loading,
-      error,
-      refresh: load,
-      updateContent,
-      updateVariant,
-      updateWidth,
-      reorder,
-      remove,
-      addSection,
+      page, sections, settings, allowedModules,
+      loading, error, refresh: load,
+      updateContent, updateVariant, updateWidth,
+      reorder, remove, addSection,
     }}>
       {children}
     </PageContext.Provider>

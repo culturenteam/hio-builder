@@ -143,7 +143,8 @@
   background: var(--surface-raised);
   border-color: var(--border-strong);
 }
-.pickerItem:disabled { opacity: 0.5; cursor: wait; }
+.pickerItem:disabled { opacity: 0.5; cursor: not-allowed; }
+.pickerLocked { opacity: 0.45; }
 
 .pickerIcon {
   font-size: var(--text-2xl);

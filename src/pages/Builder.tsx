@@ -36,7 +36,7 @@ const MODULE_ICONS: Record<ModuleType, string> = {
 };
 
 export function Builder() {
-  const { sections, loading, error, reorder, addSection } = usePage();
+  const { sections, loading, error, reorder, addSection, allowedModules } = usePage();
   const { user, signOut } = useAuth();
   const [addOpen, setAddOpen] = useState(false);
   const [adding, setAdding] = useState<ModuleType | null>(null);
@@ -115,17 +115,21 @@ export function Builder() {
           {/* Module type picker */}
           {addOpen && (
             <div className={styles.picker}>
-              {MODULE_TYPES.map(type => (
-                <button
-                  key={type}
-                  className={styles.pickerItem}
-                  onClick={() => handleAdd(type)}
-                  disabled={adding === type}
-                >
-                  <span className={styles.pickerIcon}>{MODULE_ICONS[type]}</span>
-                  <span className={styles.pickerLabel}>{type}</span>
-                </button>
-              ))}
+              {MODULE_TYPES.map(type => {
+                const locked = allowedModules.length > 0 && !allowedModules.includes(type);
+                return (
+                  <button
+                    key={type}
+                    className={`${styles.pickerItem} ${locked ? styles.pickerLocked : ''}`}
+                    onClick={() => !locked && handleAdd(type)}
+                    disabled={adding === type || locked}
+                    title={locked ? 'Upgrade to paid to unlock' : type}
+                  >
+                    <span className={styles.pickerIcon}>{locked ? '🔒' : MODULE_ICONS[type]}</span>
+                    <span className={styles.pickerLabel}>{type}</span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
