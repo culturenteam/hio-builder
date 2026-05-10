@@ -106,6 +106,22 @@ export async function deleteSection(id: string): Promise<boolean> {
   return !error;
 }
 
+export async function insertSection(
+  pageId: string,
+  type: Section['type'],
+  content: Section['content'],
+  order: number
+): Promise<Section | null> {
+  const { data, error } = await supabase
+    .from('sections')
+    .insert({ page_id: pageId, type, content, style_variant: 'minimal', order, width: 12 })
+    .select()
+    .single();
+
+  if (error) return null;
+  return data as Section;
+}
+
 /* ── User settings ───────────────────────────────────────── */
 
 export async function getUserSettings(userId: string): Promise<UserSettings | null> {

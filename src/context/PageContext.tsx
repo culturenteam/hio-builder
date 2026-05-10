@@ -1,6 +1,6 @@
 import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { Page, Section } from '../types/page';
-import type { StyleVariant } from '../types/module';
+import type { ModuleType, StyleVariant } from '../types/module';
 import {
   getUserPage,
   getSections,
@@ -8,7 +8,20 @@ import {
   updateStyleVariant,
   reorderSections,
   deleteSection,
+  insertSection,
 } from '../services/supabase';
+
+const DEFAULT_CONTENT: Record<ModuleType, Section['content']> = {
+  hero:        { headline: 'Your headline here', subheadline: 'A short intro sentence.' } as any,
+  bio:         { title: 'About Me', body: 'Write something about yourself here.' } as any,
+  services:    { title: 'Services', items: [{ title: 'Service', description: 'Description', price: '', cta_label: '', cta_url: '' }], columns: 2 } as any,
+  calendar:    { title: 'Events', events: [], show_past: false } as any,
+  links:       { title: 'Links', items: [], columns: 2 } as any,
+  contact:     { title: 'Contact', show_form: false } as any,
+  gallery:     { title: 'Gallery', images: [], columns: 3 } as any,
+  testimonial: { title: 'Testimonials', items: [], layout: 'grid' } as any,
+  custom:      { html: '<p>Custom HTML content</p>', height: 200 } as any,
+};
 import { useAuthContext } from './AuthContext';
 
 interface PageContextValue {
@@ -22,6 +35,7 @@ interface PageContextValue {
   updateWidth: (id: string, width: number) => Promise<void>;
   reorder: (orderedIds: string[]) => Promise<void>;
   remove: (id: string) => Promise<void>;
+  addSection: (type: ModuleType) => Promise<void>;
 }
 
 const PageContext = createContext<PageContextValue | null>(null);
@@ -87,6 +101,14 @@ export function PageProvider({ children }: PageProviderProps) {
     await deleteSection(id);
   }
 
+  async function addSection(type: ModuleType) {
+    if (!page) return;
+    const order = sections.length;
+    const content = DEFAULT_CONTENT[type];
+    const created = await insertSection(page.id, type, content, order);
+    if (created) setSections(prev => [...prev, created]);
+  }
+
   return (
     <PageContext.Provider value={{
       page,
@@ -99,6 +121,7 @@ export function PageProvider({ children }: PageProviderProps) {
       updateWidth,
       reorder,
       remove,
+      addSection,
     }}>
       {children}
     </PageContext.Provider>

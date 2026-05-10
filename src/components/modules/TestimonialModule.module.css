@@ -1,0 +1,91 @@
+.module {
+  padding: var(--space-10) var(--space-8);
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-8);
+  line-height: var(--leading-tight);
+}
+
+.items { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.gridLayout .items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  margin: 0;
+  padding: var(--space-6);
+  background: var(--surface-raised);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.quote {
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+  flex: 1;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.author {
+  font-style: normal;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  display: block;
+}
+
+.role {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: var(--space-1) 0 0;
+}
+
+/* ── Variants ──────────────────────────────────── */
+
+.minimal { background: transparent; }
+.minimal .card { background: transparent; border-left: 3px solid var(--border-strong); border-radius: 0; padding-left: var(--space-5); }
+
+.bold {
+  background: var(--surface-dark);
+}
+.bold .title { color: var(--text-on-dark); font-weight: var(--weight-black); }
+.bold .card { background: var(--p-gray-800); }
+.bold .quote { color: var(--text-on-dark); }
+.bold .author { color: var(--text-on-dark); }
+.bold .role { color: var(--text-tertiary); }
+
+.outlined {
+  background: transparent;
+  border: 2px solid var(--border-strong);
+}
+.outlined .card { background: transparent; border: 1px solid var(--border-strong); }
+
+.filled {
+  background: var(--surface-raised);
+}
+.filled .card { background: var(--surface-base); box-shadow: var(--shadow-sm); }

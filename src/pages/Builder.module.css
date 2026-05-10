@@ -32,16 +32,15 @@
 }
 
 .signOut {
-  font-family: var(--font-sans);
   font-size: var(--text-xs);
   color: var(--text-tertiary);
+  background: none;
+  border: none;
   cursor: pointer;
   transition: color var(--transition-fast);
+  padding: 0;
 }
-
-.signOut:hover {
-  color: var(--text-primary);
-}
+.signOut:hover { color: var(--text-primary); }
 
 .chatPlaceholder {
   flex: 1;
@@ -60,14 +59,15 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  background: var(--surface-overlay);
 }
 
 .canvasInner {
   flex: 1;
-  max-width: var(--content-max);
+  max-width: 860px;
   width: 100%;
   margin: 0 auto;
-  padding: var(--space-8) var(--space-6);
+  padding: var(--space-8) var(--space-6) var(--space-16);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -77,37 +77,86 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  border: 1px dashed var(--border-subtle);
-  border-radius: var(--radius-md);
+  min-height: 160px;
+  border: 1.5px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
   color: var(--text-tertiary);
   font-size: var(--text-sm);
 }
 
-/* ── Module card placeholder ─────────────────────────────── */
+/* ── Add module button ───────────────────────────────────── */
 
-.moduleCard {
+.addBtn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--space-4) var(--space-6);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  background: var(--surface-raised);
-}
-
-.moduleLabel {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: var(--surface-base);
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+  justify-content: center;
+}
+.addBtn:hover {
+  border-color: var(--border-focus);
+  color: var(--text-accent);
+  background: var(--surface-accent);
 }
 
-.moduleVariant {
-  font-family: var(--font-mono);
+.addIcon {
+  font-size: var(--text-lg);
+  line-height: 1;
+  font-weight: var(--weight-normal);
+}
+
+/* ── Module type picker ──────────────────────────────────── */
+
+.picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.pickerItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.pickerItem:hover {
+  background: var(--surface-raised);
+  border-color: var(--border-strong);
+}
+.pickerItem:disabled { opacity: 0.5; cursor: wait; }
+
+.pickerIcon {
+  font-size: var(--text-2xl);
+  line-height: 1;
+  color: var(--text-secondary);
+}
+
+.pickerLabel {
   font-size: var(--text-xs);
-  color: var(--text-tertiary);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+  text-transform: capitalize;
+  font-family: var(--font-mono);
 }
 
 /* ── Footer ──────────────────────────────────────────────── */
@@ -115,6 +164,7 @@
 .footer {
   padding: var(--space-3) var(--space-6);
   border-top: 1px solid var(--border-subtle);
+  background: var(--surface-base);
 }
 
 .slug {
@@ -137,14 +187,14 @@
 /* ── Mobile: sidebar becomes bottom drawer ───────────────── */
 
 @media (max-width: 768px) {
-  .layout {
-    flex-direction: column-reverse;
-  }
+  .layout { flex-direction: column-reverse; }
 
   .sidebar {
     width: 100%;
-    height: 280px;
+    height: 240px;
     border-right: none;
     border-top: 1px solid var(--border-subtle);
   }
+
+  .picker { grid-template-columns: repeat(3, 1fr); }
 }

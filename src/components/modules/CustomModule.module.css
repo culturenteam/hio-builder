@@ -1,0 +1,16 @@
+.module {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+}
+
+.frame {
+  width: 100%;
+  border: none;
+  display: block;
+  border-radius: var(--radius-md);
+}
+
+.minimal { background: transparent; }
+.bold { background: var(--surface-dark); }
+.outlined { border: 2px solid var(--border-strong); background: transparent; }
+.filled { background: var(--surface-raised); }

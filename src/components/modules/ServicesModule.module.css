@@ -1,0 +1,83 @@
+.module {
+  padding: var(--space-10) var(--space-8);
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-8);
+  line-height: var(--leading-tight);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), 1fr);
+  gap: var(--space-4);
+}
+
+.card {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cardTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.cardDesc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+  flex: 1;
+}
+
+.price {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-accent);
+  margin: var(--space-2) 0 0;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-accent);
+  text-decoration: none;
+}
+.cta:hover { text-decoration: underline; }
+
+/* ── Variants ──────────────────────────────────── */
+
+.minimal { background: transparent; }
+.minimal .card { background: transparent; border: 1px solid var(--border-subtle); }
+
+.bold {
+  background: var(--surface-dark);
+}
+.bold .title { color: var(--text-on-dark); font-weight: var(--weight-black); }
+.bold .card { background: var(--p-gray-800); }
+.bold .cardTitle { color: var(--text-on-dark); }
+.bold .cardDesc { color: var(--text-tertiary); }
+
+.outlined {
+  background: transparent;
+  border: 2px solid var(--border-strong);
+}
+.outlined .card { background: transparent; border: 1px solid var(--border-strong); }
+
+.filled {
+  background: var(--surface-raised);
+}
+.filled .card { background: var(--surface-base); box-shadow: var(--shadow-sm); }

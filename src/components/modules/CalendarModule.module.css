@@ -1,0 +1,122 @@
+.module {
+  padding: var(--space-10) var(--space-8);
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-6);
+  line-height: var(--leading-tight);
+}
+
+.empty {
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.event {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  align-items: flex-start;
+}
+.event:last-child { border-bottom: none; }
+
+.dateBadge {
+  flex-shrink: 0;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.dateText {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.time {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.eventBody { flex: 1; }
+
+.eventTitle {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1);
+}
+
+.eventDesc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-2);
+  line-height: var(--leading-relaxed);
+}
+
+.location {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-2);
+}
+
+.eventLink {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-accent);
+  text-decoration: none;
+}
+.eventLink:hover { text-decoration: underline; }
+
+/* ── Variants ──────────────────────────────────── */
+
+.minimal { background: transparent; }
+
+.bold {
+  background: var(--surface-dark);
+}
+.bold .title { color: var(--text-on-dark); font-weight: var(--weight-black); }
+.bold .event { border-color: var(--border-dark); }
+.bold .dateText { color: var(--text-on-dark); }
+.bold .time { color: var(--text-tertiary); }
+.bold .eventTitle { color: var(--text-on-dark); }
+.bold .eventDesc { color: var(--text-tertiary); }
+.bold .location { color: var(--text-tertiary); }
+
+.outlined {
+  background: transparent;
+  border: 2px solid var(--border-strong);
+}
+.outlined .dateBadge {
+  border-right: 1px solid var(--border-subtle);
+  padding-right: var(--space-5);
+}
+
+.filled {
+  background: var(--surface-raised);
+}
+.filled .event {
+  background: var(--surface-base);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border-bottom: none;
+}
+.filled .list { gap: var(--space-2); }
