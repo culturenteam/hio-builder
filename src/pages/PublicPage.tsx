@@ -40,21 +40,27 @@ export function PublicPage() {
 
   return (
     <div className={styles.layout}>
-      <main className={styles.canvas}>
-        {sections.length === 0 ? (
-          <div className={styles.empty}>This page has no content yet.</div>
-        ) : (
-          sections.map(section => (
-            <div
+      {sections.length === 0 ? (
+        <div className={styles.empty}>This page has no content yet.</div>
+      ) : (
+        <main className={styles.main}>
+          {sections.map((section, i) => (
+            <section
               key={section.id}
-              className={styles.moduleWrap}
-              style={{ '--col-width': section.width } as React.CSSProperties}
+              className={`${styles.section} ${styles[`type_${section.type}`] ?? ''}`}
+              data-variant={section.style_variant}
+              data-first={i === 0 ? 'true' : undefined}
             >
-              <ModuleRenderer section={section} />
-            </div>
-          ))
-        )}
-      </main>
+              <div
+                className={styles.inner}
+                style={{ '--col-width': section.width } as React.CSSProperties}
+              >
+                <ModuleRenderer section={section} />
+              </div>
+            </section>
+          ))}
+        </main>
+      )}
 
       <footer className={styles.footer}>
         <Link to="/" className={styles.badge}>

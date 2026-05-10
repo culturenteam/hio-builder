@@ -48,34 +48,61 @@
 }
 .notFoundLink:hover { text-decoration: underline; }
 
-/* ── Canvas ──────────────────────────────────────────────── */
-
-.canvas {
-  flex: 1;
-  max-width: 860px;
-  width: 100%;
-  margin: 0 auto;
-  padding: var(--space-10) var(--space-6) var(--space-16);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
 .empty {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
   color: var(--text-tertiary);
   font-size: var(--text-sm);
 }
 
-/* ── Per-module width ────────────────────────────────────── */
+/* ── Main ────────────────────────────────────────────────── */
 
-.moduleWrap {
-  width: calc(var(--col-width) / 12 * 100%);
-  max-width: 100%;
-  align-self: flex-start;
+.main {
+  flex: 1;
+}
+
+/* ── Section wrapper — each module gets its own full-width row */
+
+.section {
+  width: 100%;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.section:last-child { border-bottom: none; }
+
+/* First section (hero) gets more breathing room */
+.section[data-first] {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+}
+.section[data-first] .inner {
+  width: 100%;
+}
+
+/* Bold variant: dark background */
+.section[data-variant='bold'] {
+  background: var(--surface-dark);
+}
+
+/* Filled variant: accent tint */
+.section[data-variant='filled'] {
+  background: var(--surface-accent);
+}
+
+/* Outlined variant: subtle raised bg */
+.section[data-variant='outlined'] {
+  background: var(--surface-raised);
+}
+
+/* ── Inner — constrained content width ───────────────────── */
+
+.inner {
+  max-width: calc(var(--col-width, 12) / 12 * 860px);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-6);
 }
 
 /* ── Footer badge ────────────────────────────────────────── */
@@ -105,6 +132,6 @@
 }
 
 @media (max-width: 768px) {
-  .canvas { padding: var(--space-6) var(--space-4) var(--space-12); }
-  .moduleWrap { width: 100%; }
+  .inner { padding: var(--space-10) var(--space-4); }
+  .section[data-first] { min-height: 40vh; }
 }
