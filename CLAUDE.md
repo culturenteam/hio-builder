@@ -38,6 +38,12 @@ Stack: **Vite + React 19 + TypeScript + Supabase + Claude Haiku (Anthropic)**
 6. **Never edit Supabase schema ad-hoc.** All schema changes go through a numbered migration
    file in `supabase/migrations/`. See `docs/DATABASE.md`.
 
+7. **Always commit before running any generator or scaffolder.** Tools like `npm create vite`,
+   `create-next-app`, or any CLI that asks "directory is not empty" will delete uncommitted
+   files if you choose the wrong option. Commit first — git is the only safety net.
+   This rule exists because it happened: docs/ and CLAUDE.md were wiped during the initial
+   Vite scaffold before they were committed.
+
 ---
 
 ## File Structure
