@@ -1,0 +1,194 @@
+/* ============================================================
+   tokens.css — hio-builder Design System
+   The ONLY file with raw values. Everything else uses var(--*)
+   See docs/DESIGN.md for the full reference.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ----------------------------------------------------------
+     PRIMITIVES — never reference these in components
+     ---------------------------------------------------------- */
+
+  --p-black:     #0a0a0a;
+  --p-white:     #ffffff;
+  --p-gray-50:   #f9f9f9;
+  --p-gray-100:  #f2f2f2;
+  --p-gray-200:  #e5e5e5;
+  --p-gray-300:  #d4d4d4;
+  --p-gray-400:  #a3a3a3;
+  --p-gray-500:  #737373;
+  --p-gray-600:  #525252;
+  --p-gray-700:  #404040;
+  --p-gray-800:  #262626;
+  --p-gray-900:  #171717;
+  --p-accent:    #2563eb;
+  --p-accent-lt: #eff6ff;
+  --p-success:   #16a34a;
+  --p-warning:   #d97706;
+  --p-error:     #dc2626;
+
+  /* ----------------------------------------------------------
+     SEMANTIC — SURFACES
+     ---------------------------------------------------------- */
+
+  --surface-base:    var(--p-white);
+  --surface-raised:  var(--p-gray-50);
+  --surface-overlay: var(--p-gray-100);
+  --surface-dark:    var(--p-gray-900);
+  --surface-accent:  var(--p-accent-lt);
+
+  /* ----------------------------------------------------------
+     SEMANTIC — TEXT
+     ---------------------------------------------------------- */
+
+  --text-primary:   var(--p-gray-900);
+  --text-secondary: var(--p-gray-600);
+  --text-tertiary:  var(--p-gray-400);
+  --text-on-dark:   var(--p-white);
+  --text-accent:    var(--p-accent);
+
+  /* ----------------------------------------------------------
+     SEMANTIC — BORDERS
+     ---------------------------------------------------------- */
+
+  --border-subtle: var(--p-gray-200);
+  --border-strong: var(--p-gray-300);
+  --border-focus:  var(--p-accent);
+  --border-dark:   var(--p-gray-700);
+
+  /* ----------------------------------------------------------
+     SEMANTIC — STATUS
+     ---------------------------------------------------------- */
+
+  --color-success: var(--p-success);
+  --color-warning: var(--p-warning);
+  --color-error:   var(--p-error);
+
+  /* ----------------------------------------------------------
+     SPACING — 4px base unit
+     ---------------------------------------------------------- */
+
+  --space-0:  0px;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — FONTS
+     ---------------------------------------------------------- */
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — SCALE
+     ---------------------------------------------------------- */
+
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  clamp(1.875rem, 4vw, 2.25rem);
+  --text-5xl:  clamp(2.25rem, 6vw, 3rem);
+  --text-6xl:  clamp(3rem, 8vw, 4.5rem);
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — WEIGHT
+     ---------------------------------------------------------- */
+
+  --weight-normal:   400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-black:    900;
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — LINE HEIGHT
+     ---------------------------------------------------------- */
+
+  --leading-tight:   1.2;
+  --leading-snug:    1.375;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — LETTER SPACING
+     ---------------------------------------------------------- */
+
+  --tracking-tight:   -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.05em;
+  --tracking-widest:  0.1em;
+
+  /* ----------------------------------------------------------
+     BORDERS & RADIUS
+     ---------------------------------------------------------- */
+
+  --radius-none: 0px;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:   12px;
+  --radius-full: 9999px;
+
+  /* ----------------------------------------------------------
+     SHADOWS
+     ---------------------------------------------------------- */
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
+
+  /* ----------------------------------------------------------
+     TRANSITIONS
+     ---------------------------------------------------------- */
+
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* ----------------------------------------------------------
+     Z-INDEX
+     ---------------------------------------------------------- */
+
+  --z-base:     0;
+  --z-raised:   10;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-modal:    300;
+  --z-toast:    400;
+
+  /* ----------------------------------------------------------
+     LAYOUT
+     ---------------------------------------------------------- */
+
+  --content-max:      800px;
+  --sidebar-width:    360px;
+  --grid-columns:     12;
+  --grid-gap:         var(--space-4);
+
+  /* ----------------------------------------------------------
+     BREAKPOINTS (for use in JS via getComputedStyle)
+     ---------------------------------------------------------- */
+
+  --bp-sm:  640px;
+  --bp-md:  768px;
+  --bp-lg:  1024px;
+  --bp-xl:  1280px;
+}
