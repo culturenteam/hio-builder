@@ -16,15 +16,15 @@ import {
 import { useAuthContext } from './AuthContext';
 
 const DEFAULT_CONTENT: Record<ModuleType, Section['content']> = {
-  hero:        { headline: 'Your headline here', subheadline: 'A short intro sentence.' } as any,
-  bio:         { title: 'About Me', body: 'Write something about yourself here.' } as any,
-  services:    { title: 'Services', items: [{ title: 'Service', description: 'Description', price: '', cta_label: '', cta_url: '' }], columns: 2 } as any,
-  calendar:    { title: 'Events', events: [], show_past: false } as any,
-  links:       { title: 'Links', items: [], columns: 2 } as any,
-  contact:     { title: 'Contact', show_form: false } as any,
-  gallery:     { title: 'Gallery', images: [], columns: 3 } as any,
-  testimonial: { title: 'Testimonials', items: [], layout: 'grid' } as any,
-  custom:      { html: '<p>Custom HTML content</p>', height: 200 } as any,
+  hero:        { headline: 'Your headline here', subheadline: 'A short intro sentence.' } as Section['content'],
+  bio:         { title: 'About Me', body: 'Write something about yourself here.' } as Section['content'],
+  services:    { title: 'Services', items: [{ title: 'Service', description: 'Description', price: '', cta_label: '', cta_url: '' }], columns: 2 } as Section['content'],
+  calendar:    { title: 'Events', events: [], show_past: false } as Section['content'],
+  links:       { title: 'Links', items: [], columns: 2 } as Section['content'],
+  contact:     { title: 'Contact', show_form: false } as Section['content'],
+  gallery:     { title: 'Gallery', images: [], columns: 3 } as Section['content'],
+  testimonial: { title: 'Testimonials', items: [], layout: 'grid' } as Section['content'],
+  custom:      { html: '<p>Custom HTML content</p>', height: 200 } as Section['content'],
 };
 
 interface PageContextValue {
@@ -35,11 +35,11 @@ interface PageContextValue {
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  updateContent: (id: string, content: Section['content']) => Promise<void>;
-  updateVariant: (id: string, variant: StyleVariant) => Promise<void>;
-  updateWidth: (id: string, width: number) => Promise<void>;
-  reorder: (orderedIds: string[]) => Promise<void>;
-  remove: (id: string) => Promise<void>;
+  updateContent: (id: string, content: Section['content']) => Promise<boolean>;
+  updateVariant: (id: string, variant: StyleVariant) => Promise<boolean>;
+  updateWidth: (id: string, width: number) => Promise<boolean>;
+  reorder: (orderedIds: string[]) => Promise<boolean>;
+  remove: (id: string) => Promise<boolean>;
   addSection: (type: ModuleType) => Promise<void>;
 }
 
@@ -72,22 +72,32 @@ export function PageProvider({ children }: { children: ReactNode }) {
 
   const allowedModules = settings ? getAllowedModules(settings) : [];
 
-  async function updateContent(id: string, content: Section['content']) {
-    setSections(prev => prev.map(s => s.id === id ? { ...s, content } : s));
-    await updateSection(id, { content });
+  async function updateContent(id: string, content: Section['content']): Promise<boolean> {
+    const prev = sections.find(s => s.id === id);
+    setSections(cur => cur.map(s => s.id === id ? { ...s, content } : s));
+    const result = await updateSection(id, { content });
+    if (!result && prev) setSections(cur => cur.map(s => s.id === id ? prev : s));
+    return result !== null;
   }
 
-  async function updateVariant(id: string, variant: StyleVariant) {
-    setSections(prev => prev.map(s => s.id === id ? { ...s, style_variant: variant } : s));
-    await updateStyleVariant(id, variant);
+  async function updateVariant(id: string, variant: StyleVariant): Promise<boolean> {
+    const prev = sections.find(s => s.id === id);
+    setSections(cur => cur.map(s => s.id === id ? { ...s, style_variant: variant } : s));
+    const ok = await updateStyleVariant(id, variant);
+    if (!ok && prev) setSections(cur => cur.map(s => s.id === id ? prev : s));
+    return ok;
   }
 
-  async function updateWidth(id: string, width: number) {
-    setSections(prev => prev.map(s => s.id === id ? { ...s, width } : s));
-    await updateSection(id, { width });
+  async function updateWidth(id: string, width: number): Promise<boolean> {
+    const prev = sections.find(s => s.id === id);
+    setSections(cur => cur.map(s => s.id === id ? { ...s, width } : s));
+    const result = await updateSection(id, { width });
+    if (!result && prev) setSections(cur => cur.map(s => s.id === id ? prev : s));
+    return result !== null;
   }
 
-  async function reorder(orderedIds: string[]) {
+  async function reorder(orderedIds: string[]): Promise<boolean> {
+    const prevSections = sections;
     const reordered = orderedIds
       .map((id, index) => {
         const section = sections.find(s => s.id === id);
@@ -96,15 +106,21 @@ export function PageProvider({ children }: { children: ReactNode }) {
       .filter((s): s is Section => s !== null);
 
     setSections(reordered);
-    if (page) await reorderSections(page.id, orderedIds);
+    if (!page) return false;
+    const ok = await reorderSections(page.id, orderedIds);
+    if (!ok) setSections(prevSections);
+    return ok;
   }
 
-  async function remove(id: string) {
+  async function remove(id: string): Promise<boolean> {
+    const prevSections = sections;
     setSections(prev => prev.filter(s => s.id !== id));
-    await deleteSection(id);
+    const ok = await deleteSection(id);
+    if (!ok) setSections(prevSections);
+    return ok;
   }
 
-  async function addSection(type: ModuleType) {
+  async function addSection(type: ModuleType): Promise<void> {
     if (!page) return;
     const order = sections.length;
     const content = DEFAULT_CONTENT[type];

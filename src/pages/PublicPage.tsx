@@ -5,27 +5,41 @@ import { ModuleRenderer } from '../components/modules/index';
 import type { Section } from '../types/page';
 import styles from './PublicPage.module.css';
 
+type Status = 'loading' | 'not-found' | 'error' | 'ready';
+
 export function PublicPage() {
   const { slug } = useParams<{ slug: string }>();
   const [sections, setSections] = useState<Section[]>([]);
-  const [status, setStatus] = useState<'loading' | 'not-found' | 'ready'>('loading');
+  const [status, setStatus] = useState<Status>('loading');
 
   useEffect(() => {
     if (!slug) { setStatus('not-found'); return; }
 
     (async () => {
-      const p = await getPageBySlug(slug);
-      if (!p) { setStatus('not-found'); return; }
+      const result = await getPageBySlug(slug);
 
-      const s = await getSections(p.id);
+      if ('notFound' in result) { setStatus('not-found'); return; }
+      if ('error' in result)    { setStatus('error'); return; }
+
+      const s = await getSections(result.page.id);
       setSections(s);
       setStatus('ready');
-      document.title = p.title ?? p.slug;
+      document.title = result.page.title ?? result.page.slug;
     })();
   }, [slug]);
 
   if (status === 'loading') {
     return <div className={styles.state}>Loading…</div>;
+  }
+
+  if (status === 'error') {
+    return (
+      <div className={styles.notFound}>
+        <p className={styles.notFoundCode}>500</p>
+        <p className={styles.notFoundMsg}>Something went wrong. Try again in a moment.</p>
+        <Link to="/" className={styles.notFoundLink}>← Go to hio</Link>
+      </div>
+    );
   }
 
   if (status === 'not-found') {
@@ -47,7 +61,7 @@ export function PublicPage() {
           {sections.map((section, i) => (
             <section
               key={section.id}
-              className={`${styles.section} ${styles[`type_${section.type}`] ?? ''}`}
+              className={styles.section}
               data-variant={section.style_variant}
               data-first={i === 0 ? 'true' : undefined}
             >

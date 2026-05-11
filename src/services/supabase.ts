@@ -36,15 +36,16 @@ export async function getUserPage(userId: string): Promise<Page | null> {
   return data as Page;
 }
 
-export async function getPageBySlug(slug: string): Promise<Page | null> {
+export async function getPageBySlug(slug: string): Promise<{ page: Page } | { notFound: true } | { error: true }> {
   const { data, error } = await supabase
     .from('pages')
     .select('*')
     .eq('slug', slug)
     .single();
 
-  if (error) return null;
-  return data as Page;
+  if (!error) return { page: data as Page };
+  if (error.code === 'PGRST116') return { notFound: true }; // no rows
+  return { error: true };
 }
 
 /* ── Sections ────────────────────────────────────────────── */

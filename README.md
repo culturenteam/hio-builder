@@ -1,16 +1,20 @@
 # hio-builder
 
-A modular, AI-powered personal page builder. Compose a page from well-defined modules, drag to reorder them, pick a visual style per module, and edit all copy and calendar events by chatting in plain language.
+A modular, AI-powered personal page builder. Live at **https://build.hio.space**.
+
+Compose a page from 9 module types, drag to reorder, pick a visual style per module,
+and edit all copy by chatting in plain language. Every user gets a shareable public URL.
 
 ---
 
 ## What it does
 
-- **Module canvas** — build a page from 9 module types: Hero, Bio, Services, Calendar, Links, Contact, Gallery, Testimonial, Custom
-- **Drag to reorder** — rearrange modules freely, changes persist instantly
-- **Style variants** — every module has 4 visual treatments (minimal, bold, outlined, filled) switchable with one click
-- **AI chat sidebar** — type natural language commands to update copy, add calendar events, manage links and services
-- **Public page** — every user gets a shareable `/:slug` URL, no auth required to view
+- **Module canvas** — 9 types: Hero, Bio, Services, Calendar, Links, Contact, Gallery, Testimonial, Custom
+- **Drag to reorder** — changes persist instantly with optimistic rollback on failure
+- **Style variants** — 4 visual treatments per module (minimal, bold, outlined, filled)
+- **AI chat sidebar** — natural language commands update copy, links, and calendar events
+- **Admin panel** — tier management, per-user module overrides, lock/unlock
+- **Public page** — `build.hio.space/[slug]` — no auth required
 
 ---
 
@@ -18,14 +22,15 @@ A modular, AI-powered personal page builder. Compose a page from well-defined mo
 
 | Layer | Technology |
 |---|---|
-| Frontend | React 19 + TypeScript + Vite |
-| Routing | React Router v6 |
+| Frontend | React 18.3 + TypeScript + Vite |
+| Routing | React Router v7 |
 | Drag & drop | dnd-kit |
-| Database | Supabase (PostgreSQL) |
+| Database | Supabase (PostgreSQL + RLS) |
 | Auth | Supabase Auth (Google OAuth) |
 | AI | Claude Haiku 4.5 (Anthropic) |
 | AI transport | Supabase Edge Functions (Deno) |
 | Styling | CSS custom properties (no framework) |
+| Deploy | Netlify (auto-deploy from GitHub) |
 
 ---
 
@@ -34,24 +39,24 @@ A modular, AI-powered personal page builder. Compose a page from well-defined mo
 ```
 hio-builder/
 ├── docs/
-│   ├── ARCHITECTURE.md   data flow, folder conventions, component layers
-│   ├── DESIGN.md         token reference, variants, component patterns
-│   ├── MODULES.md        module registry — source of truth for all types
-│   ├── AI.md             Claude tool declarations, system prompt spec
-│   └── DATABASE.md       Supabase schema, RLS policies, migration rules
+│   ├── ARCHITECTURE.md   data flow, folder conventions
+│   ├── DESIGN.md         token reference, variants
+│   ├── MODULES.md        module registry — source of truth
+│   ├── AI.md             Claude tool declarations, system prompt
+│   └── DATABASE.md       schema, RLS, migration rules
 ├── src/
-│   ├── styles/
-│   │   ├── tokens.css    all CSS custom properties
-│   │   └── global.css    base resets
-│   ├── types/            TypeScript interfaces (module, page, user, ai, api)
-│   ├── modules/          one folder per module type
-│   ├── components/       atoms → molecules → organisms
+│   ├── styles/           tokens.css + global.css
+│   ├── types/            module, page, user, ai types
+│   ├── components/
+│   │   ├── modules/      9 module renderers + index.tsx
+│   │   ├── SectionCard/  builder card with drag handle + toolbar
+│   │   └── ChatSidebar/  AI chat UI
 │   ├── context/          PageContext, AuthContext
 │   ├── services/         supabase.ts, ai.ts
-│   ├── hooks/            usePage, useAuth, useDrag, useStylePicker
-│   └── pages/            Builder, Public, Auth
+│   ├── hooks/            usePage, useAuth
+│   └── pages/            Builder, PublicPage, Admin, Auth
 ├── supabase/
-│   ├── migrations/       numbered SQL files
+│   ├── migrations/       001–009 numbered SQL files
 │   └── functions/        ai-command Edge Function
 └── CLAUDE.md             project rules for AI-assisted development
 ```
@@ -60,88 +65,54 @@ hio-builder/
 
 ## Getting started
 
-### 1. Clone and install
-
 ```bash
 git clone https://github.com/culturenteam/hio-builder.git
 cd hio-builder
 npm install
 ```
 
-### 2. Set up Supabase
+Set environment variables (or use the values already in `netlify.toml` for local dev):
 
-1. Create a project at [supabase.com](https://supabase.com)
-2. Open the SQL editor and run `supabase/migrations/001_initial_schema.sql`
-3. Enable Google OAuth under Authentication → Providers
-
-### 3. Add environment variables
-
-```bash
-cp .env.example .env.local
+```
+VITE_SUPABASE_URL=https://yfvqmzaqhayveqllchuh.supabase.co
+VITE_SUPABASE_ANON_KEY=<publishable key>
 ```
 
-Fill in your values:
-```
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
+Add Anthropic key to Supabase Edge Function secrets (never in the client):
 
-### 4. Add the Anthropic API key (Edge Function only)
-
-In the Supabase dashboard → Edge Functions → Secrets:
 ```
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-This key never touches the client bundle.
-
-### 5. Run locally
-
 ```bash
-npm run dev
+npm run dev   # http://localhost:5173
 ```
 
 ---
 
-## Development phases
+## Development phases — all shipped
 
-| Phase | Status | Description |
-|---|---|---|
-| 0 — Foundation | ✅ Done | Docs, design system, types, scaffold |
-| 1 — Infrastructure | 🔜 Next | Supabase + Auth + PageContext |
-| 2 — Builder Canvas | Planned | Module renderer, drag-to-reorder, width controls |
-| 3 — AI Chat | Planned | Claude integration, tool execution, streaming |
-| 4 — Visual Controls | Planned | Style variant picker, live preview |
-| 5 — Public Page | Planned | `/:slug` server-rendered public view |
+| Phase | Description |
+|---|---|
+| 0 — Foundation | Docs, design system, types, scaffold |
+| 1 — Infrastructure | Supabase + Auth + PageContext |
+| 2 — Builder Canvas | Module renderers, drag-to-reorder, SectionCard toolbar |
+| 3 — AI Chat | Claude Haiku, Edge Function, 9 tools |
+| 4 — Admin Panel | User list, tier toggle, module overrides, lock |
+| 5 — Public Page | `/:slug` read-only view |
 
 ---
 
 ## Design system
 
-All visual values live in `src/styles/tokens.css` as CSS custom properties.
-No raw hex, px, or hardcoded values anywhere else in the codebase.
-See `docs/DESIGN.md` for the full token reference.
-
----
+All values in `src/styles/tokens.css`. No raw hex, px, or hardcoded values anywhere else.
+See `docs/DESIGN.md`.
 
 ## Adding a module
 
-See the checklist at the bottom of `docs/MODULES.md`. Every new module requires
-updating the registry, the TypeScript types, the component, the CSS variants,
-and the database enum — in that order.
-
----
+See `docs/MODULES.md` checklist. Registry → types → component → CSS → DB enum — in that order.
 
 ## AI integration
 
-The chat sidebar sends commands to a Supabase Edge Function which calls Claude Haiku
-with typed tool declarations. The AI can only perform declared operations — no free-form
-mutations. See `docs/AI.md` for the full tool spec and system prompt.
-
----
-
-## Contributing / working with AI tools
-
-Read `CLAUDE.md` before making any changes. It contains the non-negotiable rules
-for tokens, components, module registration, and database migrations that keep
-the codebase consistent across sessions.
+Chat sidebar → Supabase Edge Function → Claude Haiku with typed tools.
+AI can only call declared operations. See `docs/AI.md`.
